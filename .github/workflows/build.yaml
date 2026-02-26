@@ -33,10 +33,10 @@ jobs:
       - name: Build firmware
         run: |
           git config --global --add safe.directory $(pwd)
-          qmk compile -kb promicro_handwired_4x6 -km sina
+          qmk compile -kb promicro_handwired_4x6 -km default
 
       - name: Upload firmware artifact
         uses: actions/upload-artifact@v4
         with:
-          name: promicro_handwired_4x6_sina
+          name: promicro_handwired_4x6_default
           path: .build/*.hex
