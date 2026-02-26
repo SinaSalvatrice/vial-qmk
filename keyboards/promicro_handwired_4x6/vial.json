@@ -1,19 +1,7 @@
 {
-  "name": "promicro_handwired_4x6",
-  "vendorId": "0x1209",
-  "productId": "0x3471",
-  "matrix": { "rows": 6, "cols": 4 },
-  "layouts": {
-    "keymap": [
-      [
-        "0,0", "0,1", "0,2", "0,3",
-        "1,0", "1,1", "1,2", "1,3",
-        "2,0", "2,1", "2,2", "2,3",
-        "3,0", "3,1", "3,2", "3,3",
-        "4,0", "4,1", "4,2", "4,3",
-        "5,0", "5,1", "5,2", "5,3"
-      ]
-    ]
-  },
-  "uid": [0x11223344, 0x55667788, 0x99AABBCC, 0x12345678]
+  "name": "promicro_handwired_4x6_sina",
+  "vendorId": "0xFEED",
+  "productId": "0x6060",
+  "matrix": [4, 6]
+  // Add other required fields for your specific keyboard
 }
