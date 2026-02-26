@@ -1,5 +1,5 @@
 
-name: Build default
+name: Build sina
 
 on:
   workflow_dispatch:
