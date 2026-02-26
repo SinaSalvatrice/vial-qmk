@@ -1,0 +1,42 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "keyboards/promicro_handwired_4x6/**"
+      - ".github/workflows/build.yaml"
+  pull_request:
+    paths:
+      - "keyboards/promicro_handwired_4x6/**"
+      - ".github/workflows/build.yaml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  build:
+    name: Build promicro_handwired_4x6:sina
+    runs-on: ubuntu-latest
+    container: ghcr.io/qmk/qmk_cli@sha256:2dc05fc9f32efebd6b05c2b8676ee548358bc7e151e9dbf4dac6b6eed4513b07
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          submodules: recursive
+
+      - name: Build firmware
+        run: |
+          git config --global --add safe.directory $(pwd)
+          qmk compile -kb promicro_handwired_4x6 -km sina
+
+      - name: Upload firmware artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: promicro_handwired_4x6_sina
+          path: .build/*.hex
