@@ -1,7 +1,6 @@
 {
   "name": "promicro_handwired_4x6_sina",
-  "vendorId": "0xFEED",
-  "productId": "0x6060",
+  "vendorId": "0x1209",
+  "productId": "0x3471",
   "matrix": [4, 6]
-  // Add other required fields for your specific keyboard
 }
