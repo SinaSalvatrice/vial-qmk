@@ -1,0 +1,6 @@
+{
+  "name": "rp2040_handwired_4x6_sina",
+  "vendorId": "0xFEED",
+  "productId": "0x4A61",
+  "matrix": [6, 4]
+}

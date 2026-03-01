@@ -1,0 +1,65 @@
+name: Build QMK firmware
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # QMK uses a bunch of system packages; this covers the common basics
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            git \
+            gcc \
+            gcc-arm-none-eabi \
+            binutils-arm-none-eabi \
+            avr-libc \
+            dfu-programmer \
+            dfu-util \
+            teensy-loader-cli \
+            python3-pip \
+            unzip \
+            wget \
+            zip
+
+      - name: Install QMK CLI
+        run: |
+          python -m pip install --upgrade pip
+          pip install qmk
+
+      - name: Setup QMK firmware
+        run: |
+          qmk setup -H ~/qmk_firmware -y
+          mkdir -p ~/qmk_firmware/keyboards/rp2040_handwired_4x6
+          cp -r $GITHUB_WORKSPACE/* ~/qmk_firmware/keyboards/rp2040_handwired_4x6/
+
+      # This compiles using the QMK CLI.
+      - name: Compile firmware
+        env:
+          KEYBOARD: "rp2040_handwired_4x6"
+          KEYMAP: "sina"
+        run: |
+          qmk compile -kb "$KEYBOARD" -km "$KEYMAP"
+
+      - name: Upload firmware artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware
+          path: |
+            ~/qmk_firmware/*.uf2
+            ~/qmk_firmware/*.hex
+            ~/qmk_firmware/*.bin

@@ -1,0 +1,28 @@
+{
+    "python-envs.pythonProjects": [
+        {
+            "path": ".",
+            "envManager": "ms-python.python:venv",
+            "packageManager": "ms-python.python:pip"
+        }
+    ]
+}
+{
+  // ...existing code...
+  "terminal.integrated.profiles.windows": {
+    "QMK MSYS MINGW64": {
+      "path": "C:\\QMK_MSYS\\usr\\bin\\bash.exe",
+      "args": ["-l", "-i"],
+      "env": {
+        "MSYSTEM": "MINGW64",
+        "CHERE_INVOKING": "1"
+      },
+      "icon": "terminal-bash"
+    }
+  },
+  "terminal.integrated.defaultProfile.windows": "QMK MSYS MINGW64",
+
+  // Prevent auto-activating .venv in terminal
+  "python.terminal.activateEnvironment": false
+  // ...existing code...
+}

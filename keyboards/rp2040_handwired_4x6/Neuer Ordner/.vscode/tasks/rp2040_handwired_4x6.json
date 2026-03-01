@@ -1,0 +1,91 @@
+// .vscode/tasks.json
+// RP2040 6x4 Numpad (QMK) – Keyboard: rp2040_handwired_4x6
+// Build / Clean / Doctor / Flash (UF2 per Copy auf RPI-RP2)
+
+{
+  "version": "2.0.0",
+  "inputs": [
+    {
+      "id": "qmkRoot",
+      "type": "promptString",
+      "description": "Pfad zu qmk_firmware (z.B. C:\\qmk\\qmk_firmware)",
+      "default": "C:\\qmk\\qmk_firmware"
+    },
+    {
+      "id": "keymap",
+      "type": "promptString",
+      "description": "Keymap (z.B. default)",
+      "default": "default"
+    },
+    {
+      "id": "rp2Drive",
+      "type": "promptString",
+      "description": "Windows Laufwerksbuchstabe von RPI-RP2 (z.B. E:)",
+      "default": "E:"
+    }
+  ],
+  "tasks": [
+    {
+      "label": "QMK: doctor",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy", "Bypass",
+        "-Command",
+        "cd \"${input:qmkRoot}\"; qmk doctor"
+      ],
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "QMK: clean",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy", "Bypass",
+        "-Command",
+        "cd \"${input:qmkRoot}\"; qmk clean"
+      ],
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "QMK: build (rp2040_handwired_4x6)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy", "Bypass",
+        "-Command",
+        "cd \"${input:qmkRoot}\"; qmk compile -kb rp2040_handwired_4x6 -km \"${input:keymap}\""
+      ],
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": ["$gcc"],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "QMK: flash UF2 (RPI-RP2 copy)",
+      "type": "shell",
+      "command": "powershell",
+      "dependsOn": "QMK: build (rp2040_handwired_4x6)",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy", "Bypass",
+        "-Command",
+        "cd \"${input:qmkRoot}\"; " +
+        "$uf2 = Get-ChildItem -Path . -Recurse -Filter *.uf2 | " +
+        "Where-Object { $_.FullName -match '\\\\.build\\\\|\\\\build\\\\' } | " +
+        "Sort-Object LastWriteTime -Descending | Select-Object -First 1; " +
+        "if(-not $uf2){ throw 'Keine .uf2 gefunden (Build zuerst ausführen).'}; " +
+        "$drive = \"${input:rp2Drive}\"; " +
+        "if(-not (Test-Path ($drive + '\\\\'))){ throw ('RPI-RP2 Laufwerk nicht gefunden: ' + $drive) }; " +
+        "Copy-Item -Force $uf2.FullName ($drive + '\\\\' + $uf2.Name); " +
+        "Write-Host ('Geflasht: ' + $uf2.Name + ' -> ' + $drive)"
+      ],
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    }
+  ]
+}
