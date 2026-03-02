@@ -1,0 +1,43 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "QMK: Test Terminal",
+      "type": "shell",
+      "command": "C:\\QMK_MSYS\\msys2_shell.cmd",
+      "args": [
+        "-defterm",
+        "-no-start",
+        "-mingw64",
+        "-here",
+        "-shell",
+        "bash"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "focus": true
+      }
+    },
+    {
+      "label": "QMK: RGB Debug Console (hid_listen)",
+      "type": "shell",
+      "command": "C:\\QMK_MSYS\\msys2_shell.cmd",
+      "args": [
+        "-defterm",
+        "-no-start",
+        "-mingw64",
+        "-here",
+        "-c",
+        "hid_listen"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "focus": true
+      }
+    }
+  ]
+}

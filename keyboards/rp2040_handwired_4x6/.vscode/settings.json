@@ -1,0 +1,18 @@
+{
+  "terminal.integrated.profiles.windows": {
+    "QMK Test Terminal": {
+      "path": "C:\\QMK_MSYS\\usr\\bin\\bash.exe",
+      "args": [
+        "-l",
+        "-i"
+      ],
+      "env": {
+        "MSYSTEM": "MINGW64",
+        "CHERE_INVOKING": "1"
+      },
+      "icon": "terminal-bash"
+    }
+  },
+  "terminal.integrated.defaultProfile.windows": "QMK Test Terminal",
+  "python.terminal.activateEnvironment": false
+}

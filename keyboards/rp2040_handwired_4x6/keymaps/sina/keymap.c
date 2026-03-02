@@ -9,7 +9,6 @@
 #include QMK_KEYBOARD_H
 #include "lib/lib8tion/lib8tion.h"   // sin8(), scale8()
 #include "timer.h"
-#include "print.h"
 
 /*
   RGB behavior adapted per user request:
@@ -30,12 +29,10 @@
 /* ---------- Tuning ---------- */
 #define STARTUP_MS            0     // disabled
 #define FRAME_MS               20   // a bit slower to reduce flicker
-#define BTN_STARTUP_IGNORE_MS 2000  // ignore encoder button shortly after boot
-#define BTN_TOGGLE_HOLD_MS     200  // require a short hold before toggling RGB
 
 /* Runtime-changeable through Settings-Layer */
-static uint8_t  base_v_max      = 96;    // breathing max (more visible)
-static uint8_t  base_v_min      = 10;    // breathing floor (non-zero to avoid blink)
+static uint8_t  base_v_max      = 25;    // breathing max (low)
+static uint8_t  base_v_min      = 1;     // breathing floor (non-zero to avoid blink)
 static uint16_t wander_step_ms  = 120;   // wander speed
 static uint8_t  current_sat     = 255;   // saturation (0..255)
 
@@ -77,9 +74,6 @@ static bool user_rgb_on = true;
 /* Button debounce for encoder button */
 static bool     btn_released  = true;
 static uint16_t btn_tmr       = 0;
-static uint16_t btn_press_tmr = 0;
-static bool     btn_toggled_in_press = false;
-static uint16_t boot_tmr      = 0;
 
 /* ---------- Custom keycodes (Settings Layer) ---------- */
 enum custom_keycodes {
@@ -236,14 +230,12 @@ static void render_frame(void) {
 }
 
 void keyboard_post_init_user(void) {
-debug_enable = true;
-    debug_matrix = true;
-    debug_keyboard = true;
-
 #ifdef ENCODER_BTN_PIN
     setPinInputHigh(ENCODER_BTN_PIN);
 #endif
-    rgblight_enable_noeeprom();
+    // NOTE: removed rgblight_enable_noeeprom() to avoid a hardware-level one-frame flash at startup.
+    // If your controller requires enabling the driver, uncomment the next line — but it may cause a blink.
+    // rgblight_enable_noeeprom();
 
     t_frame    = timer_read();
     wander_tmr = timer_read();
@@ -256,13 +248,12 @@ debug_enable = true;
     ind_active = true;
     ind_tmr    = timer_read();
 
-    /* default mode = all-LED breathing for clear visibility after flash */
-    rgb_mode = 2;
+    /* default mode = wander-only */
+    rgb_mode = 0;
 
     /* default user-level on */
     user_rgb_on = true;
 
-    boot_tmr = timer_read();
     render_frame();
 }
 
@@ -285,40 +276,24 @@ void matrix_scan_user(void) {
        We DO NOT call rgblight_toggle_noeeprom() to avoid the one-frame blink.
     */
     if (timer_elapsed(btn_tmr) >= 10) {
-        if (timer_elapsed(boot_tmr) < BTN_STARTUP_IGNORE_MS) {
-            btn_tmr = timer_read();
-            btn_released = (readPin(ENCODER_BTN_PIN) != 0);
-            return;
-        }
-
         bool pressed = (readPin(ENCODER_BTN_PIN) == 0);
 
-        if (pressed) {
-            if (btn_released) {
-                btn_released = false;
-                btn_press_tmr = timer_read();
-                btn_toggled_in_press = false;
-            } else if (!btn_toggled_in_press && timer_elapsed(btn_press_tmr) >= BTN_TOGGLE_HOLD_MS) {
-                user_rgb_on = !user_rgb_on;
+        if (pressed && btn_released) {
+            btn_tmr = timer_read();
 
-                if (!user_rgb_on) {
-                    /* Turn "off": clear all LEDs (per-LED) */
-                    clear_all_leds();
-                } else {
-                    /* Turn "on": show indicator and render next frame (no library global write) */
-                    ind_active = true;
-                    ind_tmr    = timer_read();
-                    render_frame();
-                }
+            user_rgb_on = !user_rgb_on;
 
-                btn_toggled_in_press = true;
+            if (!user_rgb_on) {
+                /* Turn "off": clear all LEDs (per-LED) */
+                clear_all_leds();
+            } else {
+                /* Turn "on": show indicator and render next frame (no library global write) */
+                ind_active = true;
+                ind_tmr    = timer_read();
+                render_frame();
             }
-        } else {
-            btn_released = true;
-            btn_toggled_in_press = false;
         }
-
-        btn_tmr = timer_read();
+        btn_released = !pressed;
     }
 #endif
 }
