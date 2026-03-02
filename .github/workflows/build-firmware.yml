@@ -1,0 +1,62 @@
+name: Build QMK Firmware
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install QMK CLI
+        run: |
+          python -m pip install --upgrade pip
+          pip install qmk
+
+      - name: Set up Vial-QMK firmware tree
+        run: |
+          rm -rf ~/qmk_firmware
+          git clone https://github.com/vial-kb/vial-qmk.git ~/qmk_firmware
+          qmk config user.qmk_home=~/qmk_firmware
+
+      - name: Copy keyboard into QMK tree
+        run: |
+          mkdir -p ~/qmk_firmware/keyboards/rp2040_handwired_4x6
+          rsync -a --delete \
+            --exclude '.git' \
+            --exclude '.github' \
+            "$GITHUB_WORKSPACE/" \
+            ~/qmk_firmware/keyboards/rp2040_handwired_4x6/
+
+      - name: Install ARM GCC toolchain
+        run: sudo apt-get update && sudo apt-get install -y gcc-arm-none-eabi
+
+      - name: Pull submodules
+        run: cd $HOME/qmk_firmware && git submodule update --init --recursive
+
+      - name: Compile firmware
+        run: |
+          cd ~/qmk_firmware
+          qmk compile -j 1 -kb rp2040_handwired_4x6 -km sina
+
+      - name: Upload firmware artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rp2040_handwired_4x6_sina_firmware
+          path: |
+            ~/qmk_firmware/*.uf2
+            ~/qmk_firmware/.build/*.uf2
+            ~/qmk_firmware/*.bin
+            ~/qmk_firmware/.build/*.bin
+          if-no-files-found: error
