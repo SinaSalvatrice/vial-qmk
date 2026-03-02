@@ -1,4 +1,4 @@
-name: Build QMK firmware
+name: Build rp2040 vial QMK firmware
 
 on:
   push:
@@ -53,12 +53,12 @@ jobs:
           KEYBOARD: "rp2040_handwired_4x6"
           KEYMAP: "sina"
         run: |
-          qmk compile -kb "$KEYBOARD" -km "$KEYMAP"
+          qmk compile -kb "rp2040_handwired_4x6" -km "$sina"
 
       - name: Upload firmware artifact
         uses: actions/upload-artifact@v4
         with:
-          name: firmware
+          name: rp2040_vial_firmware
           path: |
             ~/qmk_firmware/*.uf2
             ~/qmk_firmware/*.hex
