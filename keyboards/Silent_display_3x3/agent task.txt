@@ -1,0 +1,105 @@
+the chosen environment is qmk and it's a pro micro controller.
+the pins are
+rows: 4,5,6
+columns: 8,9,10
+encoder a and b 16, 14
+btn 15
+
+the encoder actions are as followed:
+on layer 0 - turning = mousewheel, btn = toggle layer selection
+on layer 1 - turning = mousewheel, btn = ctl+s
+on layer 2 - turning = volume, btn = mute/unmute
+on layer 3 - turning = mousewheel, btn = F23
+on layer 4 - turning = RGB brightness, btn = RGB on and off
+on layer 5 - turning = select layer, releasing should enter it = toggle layer selection
+
+if there are conflicts occuring, solve them as you find it fitting.
+
+the RGB color depends on the chosen layer, set somehow, I change it later.
+
+the layer is changed with btn+encoder turning.
+
+the RGB color depends on the chosen layer, set somehow, I change it later.
+
+keep it as simple as possible
+
+{
+"documentation": ""This file is a QMK Configurator export. You can import this at https://config.qmk.fm. It can also be used directly with QMK's source code.\n\nTo setup your QMK environment check out the tutorial: https://docs.qmk.fm/#/newbs\n\nYou can convert this file to a keymap.c using this command: qmk json2c {keymap}\n\nYou can compile this keymap using this command: qmk compile {keymap}"\n",
+"notes": "",
+"version": 1,
+"keyboard": "9key",
+"keymap": "9key_layout_2026-03-01",
+"layout": "LAYOUT",
+"layers": [
+[
+"LGUI(KC_TAB)",
+"KC_UP",
+"LALT(KC_TAB)",
+"KC_LEFT",
+"KC_ENT",
+"KC_RGHT",
+"LCTL(KC_Z)",
+"KC_DOWN",
+"LCTL(KC_R)"
+],
+[
+"LCTL(KC_A)",
+"LCTL(KC_C)",
+"LCTL(KC_V)",
+"LCTL(KC_X)",
+"LCTL(KC_ENT)",
+"LCTL(KC_NO)",
+"LCTL(KC_LSFT)",
+"KC_SPC",
+"KC_BSPC"
+],
+[
+"KC_MPRV",
+"KC_MSEL",
+"KC_MNXT",
+"KC_MRWD",
+"KC_MPLY",
+"KC_MFFD",
+"KC_DOWN",
+"KC_MSTP",
+"KC_UP"
+],
+[
+"KC_F13",
+"KC_F14",
+"KC_F15",
+"KC_F16",
+"KC_F17",
+"KC_F18",
+"KC_F19",
+"KC_F20",
+"KC_F21"
+],
+[
+"UG_SPDU",
+"UG_SPDD",
+"UG_TOGG",
+"UG_HUEU",
+"UG_HUED",
+"UG_VALU",
+"UG_SATU",
+"UG_SATD",
+"UG_VALD"
+]
+],
+"author": ""
+
+[
+"TO(1)",
+"TO(2)",
+"TO(3)",
+"TO(4)",
+"TO(0)",
+"KC_NO",
+"KC_NO",
+"KC_NO",
+"KC_NO"
+]
+],
+"
+}
