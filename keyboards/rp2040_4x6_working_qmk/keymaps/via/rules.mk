@@ -1,0 +1,6 @@
+# VIA profile.
+VIA_ENABLE = yes
+VIAL_ENABLE = yes
+DYNAMIC_KEYMAP_ENABLE = yes
+EEPROM_DRIVER = wear_leveling
+WEAR_LEVELING_DRIVER = rp2040_flash

@@ -35,11 +35,19 @@ def generate_version_h(cli):
         chibios_version = "NA"
         chibios_contrib_version = "NA"
     else:
-        git_dirty = git_is_dirty()
-        git_version = git_get_version() or current_time
-        git_qmk_hash = git_get_qmk_hash() or "Unknown"
-        chibios_version = git_get_version("chibios", "os") or current_time
-        chibios_contrib_version = git_get_version("chibios-contrib", "os") or current_time
+        try:
+            git_dirty = git_is_dirty()
+            git_version = git_get_version() or current_time
+            git_qmk_hash = git_get_qmk_hash() or "Unknown"
+            chibios_version = git_get_version("chibios", "os") or current_time
+            chibios_contrib_version = git_get_version("chibios-contrib", "os") or current_time
+        except FileNotFoundError:
+            cli.log.warning("Git executable not found; generating version.h without git metadata.")
+            git_dirty = False
+            git_version = current_time
+            git_qmk_hash = "Unknown"
+            chibios_version = current_time
+            chibios_contrib_version = current_time
 
     # Build the version.h file.
     version_h_lines = [GPL2_HEADER_C_LIKE, GENERATED_HEADER_C_LIKE, '#pragma once']

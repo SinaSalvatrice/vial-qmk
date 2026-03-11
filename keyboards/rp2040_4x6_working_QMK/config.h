@@ -1,14 +1,10 @@
 #pragma once
 
-#define SERIAL_NUMBER "SINA-RP2040-4X6-01"
-
 // Encoder Button (active-low gegen GND, mit Pullup)
 #define ENCODER_BTN_PIN GP12
 #define DYNAMIC_KEYMAP_LAYER_COUNT 5
 
 // WS2812 / RGBLIGHT (QMK aktuell)
-#define WS2812_DI_PIN GP13
-#define RGBLIGHT_LED_COUNT 10     // Anzahl NeoPixel
 #define RGBLIGHT_LIMIT_VAL 80
 #define RGBLIGHT_LAYERS
 #define RGBLIGHT_DEFAULT_MODE RGBLIGHT_MODE_STATIC_LIGHT

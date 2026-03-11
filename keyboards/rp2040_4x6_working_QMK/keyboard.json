@@ -1,9 +1,10 @@
 {
     "manufacturer": "Sina",
-    "keyboard_name": "rp2040_handwired_4x6",
+    "keyboard_name": "rp2040_4x6_working_qmk",
     "maintainer": "Sina",
     "processor": "RP2040",
     "bootloader": "rp2040",
+    "board": "GENERIC_RP_RP2040",
     "diode_direction": "ROW2COL",
     "encoder": {
         "rotary": [
@@ -14,11 +15,11 @@
         "rows": ["GP0", "GP1", "GP2", "GP3", "GP4", "GP5"],
         "cols": ["GP6", "GP7", "GP8", "GP9"]
     },
-    "url": "",
+    "url": "https://github.com/SinaSalvatrice/rp2040_4x6_working_qmk",
     "usb": {
-        "device_version": "1.0.0",
+        "device_version": "0.0.1",
         "pid": "0x4E50",
-        "vid": "0xFEED"
+        "vid": "0x5361"
     },
     "ws2812": { "pin": "GP13" },
     "rgblight": { "led_count": 10 },
@@ -27,9 +28,7 @@
         "extrakey": true,
         "nkro": true,
         "encoder": true,
-        "rgblight": true,
-        "console": false,
-        "via": true
+        "rgblight": true
     },
     "layouts": {
         "LAYOUT_6x4": {

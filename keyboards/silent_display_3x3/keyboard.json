@@ -2,19 +2,19 @@
     "manufacturer": "Sina",
     "keyboard_name": "silent_display_3x3",
     "maintainer": "Sina",
-    "processor": "atmega32u4",
-    "bootloader": "caterina",
+    "processor": "RP2040",
+    "bootloader": "rp2040",
     "diode_direction": "COL2ROW",
     "matrix_pins": {
-        "rows": ["D4", "C6", "D7"],
-        "cols": ["B4", "B5", "B6"]
+        "rows": ["GP2", "GP3", "GP4"],
+        "cols": ["GP5", "GP6", "GP7"]
     },
     "encoder": {
         "rotary": [
-            { "pin_a": "B2", "pin_b": "B3", "resolution": 4 }
+            { "pin_a": "GP8", "pin_b": "GP9", "resolution": 4 }
         ]
     },
-    "ws2812": { "pin": "D3" },
+    "ws2812": { "pin": "GP13" },
     "rgblight": {
         "led_count": 10,
         "animations": {
@@ -31,9 +31,6 @@
     },
     "features": {
         "bootmagic": true,
-        "extrakey": true,
-        "mousekey": true,
-        "nkro": true,
         "encoder": true,
         "rgblight": true,
         "via": true
@@ -54,3 +51,8 @@
         }
     }
 }
+
+
+
+
+

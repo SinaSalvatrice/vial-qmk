@@ -19,9 +19,20 @@ uniq = $(if $1,$(firstword $1) $(call uniq,$(filter-out $(firstword $1),$1)))
 define OBJ_FROM_SRC
 $(patsubst %.c,$1/%.o,$(patsubst %.cpp,$1/%.o,$(patsubst %.cc,$1/%.o,$(patsubst %.S,$1/%.o,$(patsubst %.clib,$1/%.a,$($1_SRC))))))
 endef
+
+# Use a configurable Python launcher for helper scripts; some Windows/MSYS
+# setups provide `python` but not `python3`.
+PYTHON ?= python
+
+# Force a writable temp directory for toolchain subprocesses. Some Windows
+# environments default TMP/TEMP to C:\Windows, which is not writable.
+BUILD_TMP_DIR := $(abspath $(BUILD_DIR)/tmp)
+$(shell mkdir -p $(BUILD_TMP_DIR) 2>/dev/null)
+export TMP := $(BUILD_TMP_DIR)
+export TEMP := $(BUILD_TMP_DIR)
+export TMPDIR := $(BUILD_TMP_DIR)
 $(foreach OUTPUT,$(OUTPUTS),$(eval $(OUTPUT)_OBJ +=$(call OBJ_FROM_SRC,$(OUTPUT))))
 
-# Define a list of all objects
 OBJ := $(foreach OUTPUT,$(OUTPUTS),$($(OUTPUT)_OBJ))
 NO_LTO_OBJ := $(filter %.a,$(OBJ))
 
@@ -143,7 +154,7 @@ endif
 # UF2 format settings
 # To produce a UF2 file in your build, add to your keyboard's rules.mk:
 #      FIRMWARE_FORMAT = uf2
-UF2CONV = $(TOP_DIR)/util/uf2conv.py
+UF2CONV = $(PYTHON) $(TOP_DIR)/util/uf2conv.py
 UF2CONV_ARGS ?=
 UF2_FAMILY ?= 0x0
 
@@ -257,7 +268,7 @@ gccversion :
 	#$(SILENT) || printf "$(MSG_EXECUTING) '$(DFU_SUFFIX) $(DFU_SUFFIX_ARGS) -a $(BUILD_DIR)/$(TARGET).bin 1>/dev/null':\n" ;\
 	$(COPY) $(BUILD_DIR)/$(TARGET).bin $(TARGET).bin;
 	if [ ! -z "$(VIBL)" ]; then \
-		python3 util/vial_generate_vfw.py $(TARGET).bin $(TARGET).vfw $(CONFIG_H) ;\
+		$(PYTHON) util/vial_generate_vfw.py $(TARGET).bin $(TARGET).vfw $(CONFIG_H) ;\
 	fi
 
 BEGIN = gccversion sizebefore
@@ -328,13 +339,13 @@ $1/%.a : $1/%.o
 $1/force:
 
 $1/cflags.txt: $1/force
-	echo '$$($1_CFLAGS)' | cmp -s - $$@ || echo '$$($1_CFLAGS)' > $$@
+	$$(file >$$@,$$($1_CFLAGS))
 
 $1/cxxflags.txt: $1/force
-	echo '$$($1_CXXFLAGS)' | cmp -s - $$@ || echo '$$($1_CXXFLAGS)' > $$@
+	$$(file >$$@,$$($1_CXXFLAGS))
 
 $1/asflags.txt: $1/force
-	echo '$$($1_ASFLAGS)' | cmp -s - $$@ || echo '$$($1_ASFLAGS)' > $$@
+	$$(file >$$@,$$($1_ASFLAGS))
 
 $1/compiler.txt: $1/force
 	test -f $$@ || touch $$@

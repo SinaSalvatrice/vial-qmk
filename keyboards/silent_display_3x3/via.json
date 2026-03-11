@@ -1,0 +1,16 @@
+{
+  "name": "silent_display_3x3",
+  "vendorId": "0xFEED",
+  "productId": "0x3333",
+  "matrix": {
+    "rows": 3,
+    "cols": 3
+  },
+  "layouts": {
+    "keymap": [
+      ["0,0", "0,1", "0,2"],
+      ["1,0", "1,1", "1,2"],
+      ["2,0", "2,1", "2,2"]
+    ]
+  }
+}
