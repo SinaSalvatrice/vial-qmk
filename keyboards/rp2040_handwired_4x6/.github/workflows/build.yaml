@@ -43,9 +43,9 @@ jobs:
 
       - name: Setup QMK firmware
         run: |
-          qmk setup -H ~/qmk_firmware -y
-          mkdir -p ~/qmk_firmware/keyboards/rp2040_handwired_4x6
-          cp -r $GITHUB_WORKSPACE/* ~/qmk_firmware/keyboards/rp2040_handwired_4x6/
+          git config --global --add safe.directory $GITHUB_WORKSPACE
+          qmk setup -H $GITHUB_WORKSPACE -y
+          git submodule update --init --recursive
 
       # This compiles using the QMK CLI.
       - name: Compile firmware
@@ -53,13 +53,17 @@ jobs:
           KEYBOARD: "rp2040_handwired_4x6"
           KEYMAP: "sina"
         run: |
-          qmk compile -kb "rp2040_handwired_4x6" -km "$sina"
+          qmk compile -kb "$KEYBOARD" -km "$KEYMAP"
 
       - name: Upload firmware artifact
         uses: actions/upload-artifact@v4
         with:
           name: rp2040_vial_firmware
           path: |
-            ~/qmk_firmware/*.uf2
-            ~/qmk_firmware/*.hex
-            ~/qmk_firmware/*.bin
+            ${{ github.workspace }}/*.uf2
+            ${{ github.workspace }}/.build/*.uf2
+            ${{ github.workspace }}/*.hex
+            ${{ github.workspace }}/.build/*.hex
+            ${{ github.workspace }}/*.bin
+            ${{ github.workspace }}/.build/*.bin
+          if-no-files-found: error
